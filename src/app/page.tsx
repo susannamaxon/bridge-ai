@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import FileUpload from "@/components/FileUpload";
+import UrlFetcher from "@/components/UrlFetcher";
 import PlayerSelector from "@/components/PlayerSelector";
 import PlayerStatsPanel from "@/components/PlayerStatsPanel";
 import CompetitionList from "@/components/CompetitionList";
@@ -14,6 +15,22 @@ export default function HomePage() {
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
   const [filter, setFilter] = useState<Partnership | "ALL">("ALL");
 
+  function addParsed(fileName: string, content: string) {
+    const parsed = parseCompetitionFile({ fileName, content });
+    setParsedFiles((prev) => {
+      // Replace if same fileName already loaded, otherwise append
+      const exists = prev.findIndex(
+        (f) => f.competition.fileName === fileName
+      );
+      if (exists !== -1) {
+        const next = [...prev];
+        next[exists] = parsed;
+        return next;
+      }
+      return [...prev, parsed];
+    });
+  }
+
   async function handleFilesSelected(files: File[]) {
     const results: ParsedCompetitionFile[] = [];
     for (const file of files) {
@@ -22,6 +39,10 @@ export default function HomePage() {
     }
     setParsedFiles(results);
     setSelectedPlayers([]);
+  }
+
+  function handleUrlFetched(fileName: string, content: string) {
+    addParsed(fileName, content);
   }
 
   const competitions = useMemo(
@@ -52,31 +73,33 @@ export default function HomePage() {
   );
 
   const hasData = competitions.length > 0;
+  const parseErrors = parsedFiles.filter((f) => f.errors.length > 0);
 
   return (
     <main className="mx-auto max-w-7xl p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">Bridge Analyzer</h1>
         <p className="text-zinc-400 mt-1">
-          Upload competition result files to analyze player performance.
+          Upload competition result files or load from a URL to analyze player performance.
         </p>
       </div>
 
-      <FileUpload onFilesSelected={handleFilesSelected} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FileUpload onFilesSelected={handleFilesSelected} />
+        <UrlFetcher onFetched={handleUrlFetched} />
+      </div>
 
-      {parsedFiles.some((f) => f.errors.length > 0) && (
+      {parseErrors.length > 0 && (
         <div className="rounded-xl border border-red-800 bg-red-950 p-4 text-sm">
           <p className="font-medium text-red-400">Parse errors:</p>
           <ul className="mt-1 list-disc list-inside text-red-300">
-            {parsedFiles
-              .filter((f) => f.errors.length > 0)
-              .flatMap((f) =>
-                f.errors.map((e) => (
-                  <li key={`${f.competition.fileName}-${e.message}`}>
-                    {f.competition.fileName}: {e.message}
-                  </li>
-                ))
-              )}
+            {parseErrors.flatMap((f) =>
+              f.errors.map((e) => (
+                <li key={`${f.competition.fileName}-${e.message}`}>
+                  {f.competition.fileName}: {e.message}
+                </li>
+              ))
+            )}
           </ul>
         </div>
       )}
