@@ -56,8 +56,8 @@ export default function HomePage() {
   return (
     <main className="mx-auto max-w-7xl p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Bridge Analyzer</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-bold text-white">Bridge Analyzer</h1>
+        <p className="text-zinc-400 mt-1">
           Upload competition result files to analyze player performance.
         </p>
       </div>
@@ -65,9 +65,9 @@ export default function HomePage() {
       <FileUpload onFilesSelected={handleFilesSelected} />
 
       {parsedFiles.some((f) => f.errors.length > 0) && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm">
-          <p className="font-medium text-red-700">Parse errors:</p>
-          <ul className="mt-1 list-disc list-inside text-red-600">
+        <div className="rounded-xl border border-red-800 bg-red-950 p-4 text-sm">
+          <p className="font-medium text-red-400">Parse errors:</p>
+          <ul className="mt-1 list-disc list-inside text-red-300">
             {parsedFiles
               .filter((f) => f.errors.length > 0)
               .flatMap((f) =>

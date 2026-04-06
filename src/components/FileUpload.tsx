@@ -27,59 +27,46 @@ export default function FileUpload({
     return extensions.some((ext) => lowerName.endsWith(ext.toLowerCase()));
   }
 
-function handleSelectedFiles(fileList: FileList | null) {
-  if (!fileList) return;
+  function handleSelectedFiles(fileList: FileList | null) {
+    if (!fileList) return;
 
-  const incomingFiles = Array.from(fileList);
+    const incomingFiles = Array.from(fileList);
+    const validFiles: File[] = [];
+    const nextErrors: FileError[] = [];
 
-  const validFiles: File[] = [];
-  const nextErrors: FileError[] = [];
-
-  for (const file of incomingFiles) {
-    if (!hasAcceptedExtension(file, acceptedExtensions)) {
-      nextErrors.push({
-        fileName: file.name,
-        reason: `Unsupported file type. Allowed: ${acceptedExtensions.join(", ")}`,
-      });
-      continue;
-    }
-
-    validFiles.push(file);
-  }
-
-  // 🔥 Append + deduplicate
-  setFiles((prevFiles) => {
-    const merged = [...prevFiles];
-
-    const existingKeys = new Set(
-      prevFiles.map(
-        (f) => `${f.name}-${f.lastModified}-${f.size}`
-      )
-    );
-
-    for (const file of validFiles) {
-      const key = `${file.name}-${file.lastModified}-${file.size}`;
-
-      if (!existingKeys.has(key)) {
-        merged.push(file);
-        existingKeys.add(key);
-      } else {
+    for (const file of incomingFiles) {
+      if (!hasAcceptedExtension(file, acceptedExtensions)) {
         nextErrors.push({
           fileName: file.name,
-          reason: "File already added",
+          reason: `Unsupported file type. Allowed: ${acceptedExtensions.join(", ")}`,
         });
+        continue;
       }
+      validFiles.push(file);
     }
 
-    // 🔥 Important: update parent with merged list
-    onFilesSelected?.(merged);
+    setFiles((prevFiles) => {
+      const merged = [...prevFiles];
+      const existingKeys = new Set(
+        prevFiles.map((f) => `${f.name}-${f.lastModified}-${f.size}`)
+      );
 
-    return merged;
-  });
+      for (const file of validFiles) {
+        const key = `${file.name}-${file.lastModified}-${file.size}`;
+        if (!existingKeys.has(key)) {
+          merged.push(file);
+          existingKeys.add(key);
+        } else {
+          nextErrors.push({ fileName: file.name, reason: "File already added" });
+        }
+      }
 
-  // 🔥 Merge errors instead of replacing
-  setErrors((prev) => [...prev, ...nextErrors]);
-}
+      onFilesSelected?.(merged);
+      return merged;
+    });
+
+    setErrors((prev) => [...prev, ...nextErrors]);
+  }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     handleSelectedFiles(event.target.files);
@@ -88,18 +75,16 @@ function handleSelectedFiles(fileList: FileList | null) {
   function clearFiles() {
     setFiles([]);
     setErrors([]);
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
+    if (inputRef.current) inputRef.current.value = "";
     onFilesSelected?.([]);
   }
 
   return (
-    <section className="rounded-2xl border p-6 shadow-sm">
+    <section className="rounded-2xl border border-zinc-700 bg-zinc-950 p-6">
       <div className="space-y-3">
         <div>
-          <h2 className="text-xl font-semibold">Upload competition files</h2>
-          <p className="text-sm text-gray-600">
+          <h2 className="text-xl font-semibold text-white">Upload competition files</h2>
+          <p className="text-sm text-zinc-400">
             Select one or more result files to analyze.
           </p>
         </div>
@@ -111,32 +96,32 @@ function handleSelectedFiles(fileList: FileList | null) {
             multiple
             accept={acceptAttr}
             onChange={handleInputChange}
-            className="block w-full text-sm"
+            className="block w-full text-sm text-zinc-300 file:mr-3 file:rounded-lg file:border file:border-zinc-600 file:bg-zinc-800 file:px-3 file:py-1.5 file:text-sm file:text-zinc-300 file:cursor-pointer"
           />
 
           <button
             type="button"
             onClick={clearFiles}
-            className="rounded-lg border px-3 py-2 text-sm"
+            className="rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-300 hover:border-zinc-400 transition-colors"
           >
             Clear
           </button>
         </div>
 
         <div className="space-y-2">
-          <h3 className="font-medium">Uploaded files</h3>
+          <h3 className="font-medium text-white">Uploaded files</h3>
 
           {files.length === 0 ? (
-            <p className="text-sm text-gray-500">No files selected yet.</p>
+            <p className="text-sm text-zinc-500">No files selected yet.</p>
           ) : (
             <ul className="space-y-2">
               {files.map((file) => (
                 <li
                   key={`${file.name}-${file.lastModified}`}
-                  className="rounded-lg border p-3 text-sm"
+                  className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-sm"
                 >
-                  <div className="font-medium">{file.name}</div>
-                  <div className="text-gray-600">
+                  <div className="font-medium text-white">{file.name}</div>
+                  <div className="text-zinc-400">
                     {(file.size / 1024).toFixed(1)} KB
                   </div>
                 </li>
@@ -146,9 +131,9 @@ function handleSelectedFiles(fileList: FileList | null) {
         </div>
 
         {errors.length > 0 && (
-          <div className="rounded-xl border p-4">
-            <h3 className="font-medium text-red-600">Upload errors</h3>
-            <ul className="mt-2 space-y-2 text-sm">
+          <div className="rounded-xl border border-red-800 bg-red-950 p-4">
+            <h3 className="font-medium text-red-400">Upload errors</h3>
+            <ul className="mt-2 space-y-2 text-sm text-red-300">
               {errors.map((error, index) => (
                 <li key={`${error.fileName}-${index}`}>
                   <span className="font-medium">{error.fileName}</span>: {error.reason}

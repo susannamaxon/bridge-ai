@@ -24,15 +24,15 @@ function CompetitionRow({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="border rounded-xl overflow-hidden">
+    <div className="border border-zinc-700 rounded-xl overflow-hidden bg-zinc-950">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-900 transition-colors"
       >
         <div>
-          <div className="font-medium">{competition.fileName}</div>
-          <div className="text-sm text-gray-500 mt-0.5">
+          <div className="font-medium text-white">{competition.fileName}</div>
+          <div className="text-sm text-zinc-400 mt-0.5">
             {competition.eventName && (
               <span className="mr-3">{competition.eventName}</span>
             )}
@@ -43,13 +43,13 @@ function CompetitionRow({
             <span>{competition.players.length} players</span>
           </div>
         </div>
-        <span className="text-gray-400 ml-4 shrink-0">
+        <span className="text-zinc-500 ml-4 shrink-0">
           {expanded ? "▲" : "▼"}
         </span>
       </button>
 
       {expanded && (
-        <div className="border-t px-4 pb-4">
+        <div className="border-t border-zinc-700 px-4 pb-4">
           <BoardDrillDown
             competition={competition}
             selectedPlayers={selectedPlayers}
@@ -68,7 +68,7 @@ export default function CompetitionList({
 }: CompetitionListProps) {
   if (competitions.length === 0) {
     return (
-      <div className="rounded-2xl border p-6 text-sm text-gray-500">
+      <div className="rounded-2xl border border-zinc-700 bg-zinc-950 p-6 text-sm text-zinc-400">
         No competitions loaded yet.
       </div>
     );
@@ -76,7 +76,7 @@ export default function CompetitionList({
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold">
+      <h2 className="text-lg font-semibold text-white">
         Competitions ({competitions.length})
       </h2>
       {competitions.map((competition) => (

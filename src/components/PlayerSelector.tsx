@@ -30,14 +30,14 @@ export default function PlayerSelector({
   }
 
   return (
-    <aside className="rounded-2xl border p-4 space-y-4">
+    <aside className="rounded-2xl border border-zinc-700 bg-zinc-950 p-4 space-y-4">
       <div>
-        <h2 className="font-semibold text-lg">Players</h2>
-        <p className="text-sm text-gray-500">{players.length} players found</p>
+        <h2 className="font-semibold text-lg text-white">Players</h2>
+        <p className="text-sm text-zinc-400">{players.length} players found</p>
       </div>
 
       <div>
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-2">
           Position filter
         </p>
         <div className="flex gap-2">
@@ -49,7 +49,7 @@ export default function PlayerSelector({
               className={`px-3 py-1 rounded-lg text-sm border transition-colors ${
                 filter === option
                   ? "bg-blue-600 text-white border-blue-600"
-                  : "border-gray-300 hover:border-blue-400"
+                  : "border-zinc-600 text-zinc-300 hover:border-blue-400"
               }`}
             >
               {option}
@@ -60,14 +60,14 @@ export default function PlayerSelector({
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
             Select players
           </p>
           {selectedNames.length > 0 && (
             <button
               type="button"
               onClick={clearAll}
-              className="text-xs text-blue-600 hover:underline"
+              className="text-xs text-blue-400 hover:underline"
             >
               Clear ({selectedNames.length})
             </button>
@@ -79,14 +79,14 @@ export default function PlayerSelector({
             const isSelected = selectedNames.includes(player.name);
             return (
               <li key={player.id}>
-                <label className="flex items-center gap-2 rounded-lg px-2 py-1.5 cursor-pointer hover:bg-gray-50">
+                <label className="flex items-center gap-2 rounded-lg px-2 py-1.5 cursor-pointer hover:bg-zinc-800">
                   <input
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => togglePlayer(player.name)}
-                    className="rounded"
+                    className="rounded accent-blue-500"
                   />
-                  <span className="text-sm">{player.name}</span>
+                  <span className="text-sm text-white">{player.name}</span>
                 </label>
               </li>
             );
