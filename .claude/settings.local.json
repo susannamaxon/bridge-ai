@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-next-app@16:*)"
+      "Bash(npx create-next-app@16:*)",
+      "Bash(cp /Users/susannath/vinna/github/bridge/biome.json /Users/susannath/vinna/github/bridge-ai/biome.json)",
+      "Bash(cp /Users/susannath/vinna/github/bridge/src/types/bridge.ts /Users/susannath/vinna/github/bridge-ai/src/types/bridge.ts)",
+      "Bash(cp /Users/susannath/vinna/github/bridge/src/parser/parseCompetitionFile.ts /Users/susannath/vinna/github/bridge-ai/src/parser/parseCompetitionFile.ts)",
+      "Bash(cp /Users/susannath/vinna/github/bridge/src/parser/parseContract.ts /Users/susannath/vinna/github/bridge-ai/src/parser/parseContract.ts)",
+      "Bash(cp /Users/susannath/vinna/github/bridge/src/components/FileUpload.tsx /Users/susannath/vinna/github/bridge-ai/src/components/FileUpload.tsx)",
+      "Bash(pnpm build:*)"
     ]
   }
 }
